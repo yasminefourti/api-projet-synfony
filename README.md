@@ -34,12 +34,13 @@ Enfin, je vous montrerai comment tester cela avec **Postman**.
 }
 
 
-#### Exemple de réponse réussie
+### Exemple de réponse réussie
 {
     "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ......"
 }
 
-### Conseil de débogage :
+
+## Conseil de débogage :
 # Problèmes courants et solutions
 
 ## 1. Vérifier l'installation du bundle JWT
@@ -87,3 +88,13 @@ monolog:
 ```sql
 -- Vérifiez que l'utilisateur existe avec ces informations
 SELECT * FROM user WHERE email = 'votre_email@exemple.com';
+
+Etape 3:J'affiche mes infos(afficher les informations de l'utilisateur connecté)
+modifier userController.php
+Test de l'API de profil avec Postman
+Requête pour obtenir le profil utilisateur
+- Méthode: GET
+- URL: http://127.0.0.1:8000/api/user/profile
+- Headers:
+  - Authorization: Bearer eyJ0eXAiOiJKV1..........
+Etape 4: Je peux modifier mes infos
