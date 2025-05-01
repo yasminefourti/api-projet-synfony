@@ -21,6 +21,8 @@ security:
                 check_path: /api/login           # Point d'entrée pour l'authentification
                 username_path: email             # Champ utilisé pour le login
                 password_path: password          # Champ utilisé pour le mot de passe
+                success_handler: lexik_jwt_authentication.handler.authentication_success   # 🔹 LIGNE AJOUTÉE
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure   # 🔹 LIGNE AJOUTÉE
 
         # Firewall pour toutes les routes API
         api:
@@ -39,7 +41,7 @@ security:
         - { path: ^/api/register$, roles: PUBLIC_ACCESS }
 
         # Autoriser la connexion sans token
-        - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/login, roles: PUBLIC_ACCESS}
 
         # Exemple : seules les admins peuvent accéder à /api/users
         - { path: ^/api/users$, roles: ROLE_ADMIN }
