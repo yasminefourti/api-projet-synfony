@@ -1,30 +1,45 @@
-Etape1: Je peux m'inscrire
-Etape 2: Je peux me connecter
-D'abord, configurons l'authentification dans votre application Symfony. " security.yaml"
-Ensuite, nous créerons un contrôleur pour gérer la connexion. "securityController.yaml"
-Enfin, je vous montrerai comment tester cela avec Postman. 
-##test de connexion avec postman 
-# Configuration de la requête dans Postman
 
-URL: http://localhost:8000/api/login
-Méthode: POST
 
-Headers:
-- Content-Type: application/json
-- Accept: application/json
+## 📝 Étapes principales
 
-Body (raw - JSON):
+### ✅ Étape 1 : Je peux m'inscrire  
+### ✅ Étape 2 : Je peux me connecter  
+
+D'abord, configurons l'authentification dans votre application Symfony :  
+**Fichier concerné** : `security.yaml`  
+
+Ensuite, nous créerons un contrôleur pour gérer la connexion :  
+**Fichier concerné** : `SecurityController.php`  
+
+Enfin, je vous montrerai comment tester cela avec **Postman**.
+
+---
+
+## 🔍 Test de connexion avec Postman
+
+### 🔧 Configuration de la requête dans Postman
+
+- **URL** : `http://localhost:8000/api/login`  
+- **Méthode** : `POST`
+
+#### 📨 Headers :
+- `Content-Type: application/json`  
+- `Accept: application/json`
+
+#### 🧾 Body (raw - JSON) :
+```json
 {
-    "email": "votre_email@exemple.com",
-    "password": "votre_mot_de_passe"
+  "email": "votre_email@exemple.com",
+  "password": "votre_mot_de_passe"
 }
 
-# Exemple de réponse réussie
+
+#### Exemple de réponse réussie
 {
-    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2MjA1NzY5MDAsImV4cCI6MTYyMDU4MDUwMCwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoidm90cmVfZW1haWxAZXhlbXBsZS5jb20ifQ.xyz..."
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ......"
 }
 
-Conseil de débogage :
+### Conseil de débogage :
 # Problèmes courants et solutions
 
 ## 1. Vérifier l'installation du bundle JWT
