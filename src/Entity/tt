@@ -1,0 +1,125 @@
+<?php
+
+namespace App\Entity;
+
+use App\Repository\UserRepository;
+
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+
+class User implements UserInterface, PasswordAuthenticatedUserInterface
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
+
+    #[ORM\Column(length: 255)]
+    private string $name;
+
+    #[ORM\Column(length: 255)]
+    private string $firstname;
+
+    #[ORM\Column(type: 'date')]
+    private \DateTimeInterface $birthday;
+
+    #[ORM\Column(length: 180, unique: true)]
+    private string $email;
+
+    #[ORM\Column]
+    private string $password;
+
+    #[ORM\Column]
+    private array $role = [];
+
+    // --- Getters & Setters ---
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): static
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    public function getFirstname(): string
+    {
+        return $this->firstname;
+    }
+
+    public function setFirstname(string $firstname): static
+    {
+        $this->firstname = $firstname;
+        return $this;
+    }
+
+    public function getBirthday(): \DateTimeInterface
+    {
+        return $this->birthday;
+    }
+
+    public function setBirthday(\DateTimeInterface $birthday): static
+    {
+        $this->birthday = $birthday;
+        return $this;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
+        return $this;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
+        return $this;
+    }
+
+    # Fonction obligatoire du UserInterface
+
+    public function getRoles(): array
+    {
+        return $this->role;
+    }
+
+    public function setRoles(array $role): static
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+    public function eraseCredentials(): void
+    {
+        // Laisse vide sauf si tu stockes des infos sensibles temporairement
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
+    }
+
+}
