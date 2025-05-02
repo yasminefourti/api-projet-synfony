@@ -1,100 +1,137 @@
+# 🚀 Guide d'utilisation de l'API d'authentification
 
+Ce document explique comment utiliser l'API d'authentification de notre application, avec des exemples de requêtes utilisant Postman.
 
-## 📝 Étapes principales
+## 📋 Table des matières
 
-### ✅ Étape 1 : Je peux m'inscrire  
-### ✅ Étape 2 : Je peux me connecter  
+- Je peux m'inscrire
+- Je peux me connecter
+- J'affiche mes infos (afficher les informations de l'utilisateur connecté))
+- Je peux modifier mes infos
+- En tant qu’admin j’ai la liste de tous les utilisateurs
+- Je peux me déconnecter
 
-D'abord, configurons l'authentification dans votre application Symfony :  
-**Fichier concerné** : `security.yaml`  
+## 📝 Inscription
 
-Ensuite, nous créerons un contrôleur pour gérer la connexion :  
-**Fichier concerné** : `SecurityController.php`  
+### Endpoint
 
-Enfin, je vous montrerai comment tester cela avec **Postman**.
+```
+POST http://localhost:8000/api/register
+```
 
----
+### En-têtes (Headers)
 
-## 🔍 Test de connexion avec Postman
+```
+Content-Type: application/json
+```
 
-### 🔧 Configuration de la requête dans Postman
+### Corps de la requête (Body)
 
-- **URL** : `http://localhost:8000/api/login`  
-- **Méthode** : `POST`
-
-#### 📨 Headers :
-- `Content-Type: application/json`  
-- `Accept: application/json`
-
-#### 🧾 Body (raw - JSON) :
 ```json
 {
-  "email": "votre_email@exemple.com",
-  "password": "votre_mot_de_passe"
+    "lastname": "Dupont",
+    "firstname": "Jean",
+    "email": "jean.dupont@example.com",
+    "password": "motdepasse123",
+    "role": ["ROLE_USER"]
 }
+```
 
+### Réponse attendue
 
-### Exemple de réponse réussie
+En cas de succès, l'API renvoie un statut `201 Created` avec les informations de l'utilisateur créé (sans le mot de passe).
+
+## 🔑 Connexion
+
+### Endpoint
+
+```
+POST http://localhost:8000/api/login
+```
+
+### En-têtes (Headers)
+
+```
+Content-Type: application/json
+Accept: application/json
+```
+
+### Corps de la requête (Body)
+
+```json
+{
+    "email": "jean.dupont@example.com",
+    "password": "motdepasse123"
+}
+```
+
+### Réponse attendue
+
+```json
 {
     "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ......"
 }
-
-
-## Conseil de débogage :
-# Problèmes courants et solutions
-
-## 1. Vérifier l'installation du bundle JWT
-```bash
-# Vérifier que le bundle est bien installé
-composer require lexik/jwt-authentication-bundle
 ```
 
-## 2. Vérifier les routes
-```bash
-# Liste toutes les routes de l'application
-php bin/console debug:router
+> ⚠️ **Important** : Conservez ce token, vous en aurez besoin pour toutes les requêtes authentifiées.
+
+## 👤 Consulter son profil
+
+Cette fonctionnalité permet à l'utilisateur connecté de consulter ses propres informations.
+
+### Endpoint
+
+```
+GET http://localhost:8000/api/user/profile
 ```
 
-## 3. Vérifier la configuration de sécurité
-```bash
-# Affiche la configuration de sécurité actuelle
-php bin/console debug:config security
+### En-têtes (Headers)
+
+```
+Authorization: Bearer [votre_token_jwt]
 ```
 
-## 4. Vérifier les firewalls actifs
-```bash
-# Affiche les informations de sécurité
-php bin/console debug:security
+### Réponse attendue
+
+```json
+{
+    "id": 1,
+    "lastname": "Dupont",
+    "firstname": "Jean",
+    "email": "jean.dupont@example.com",
+    "roles": ["ROLE_USER"]
+}
 ```
 
-## 5. Activer les logs détaillés
-# Dans config/packages/dev/monolog.yaml, ajoutez:
-```yaml
-monolog:
-    handlers:
-        security:
-            type: stream
-            path: "%kernel.logs_dir%/security.log"
-            level: debug
-            channels: [security]
-```
+## ✏️ Modifier ses informations
 
-## 6. Erreurs courantes:
-- "JWT Token not found": Vérifiez que vous envoyez bien le header Authorization
-- "Invalid credentials": Vérifiez email/mot de passe
-- "Invalid JWT Token": Le token est expiré ou mal formé
-
-## 7. Vérifier l'état de l'utilisateur en base de données
-```sql
--- Vérifiez que l'utilisateur existe avec ces informations
-SELECT * FROM user WHERE email = 'votre_email@exemple.com';
-
-Etape 3:J'affiche mes infos(afficher les informations de l'utilisateur connecté)
+Cette fonctionnalité permet à l'utilisateur connecté de modifier ses informations personnelles.
 modifier userController.php
 Test de l'API de profil avec Postman
-Requête pour obtenir le profil utilisateur
-- Méthode: GET
-- URL: http://127.0.0.1:8000/api/user/profile
-- Headers:
-  - Authorization: Bearer eyJ0eXAiOiJKV1..........
-Etape 4: Je peux modifier mes infos
+
+### Endpoint
+
+```
+ http://127.0.0.1:8000/api/user/profile
+```
+
+### En-têtes (Headers)
+
+```
+Content-Type: application/json
+Authorization: Bearer [votre_token_jwt]
+```
+
+### Corps de la requête (Body)
+
+```json
+{
+    "lastname": "Dupont",
+    "firstname": "Pierre",
+    "email": "pierre.dupont@example.com"
+}
+```
+
+### Réponse attendue
+
+L'API renvoie un statut `200 OK` avec les informations mises à jour de l'utilisateur.
