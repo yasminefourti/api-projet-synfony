@@ -79,6 +79,9 @@ Accept: application/json
 
 Cette fonctionnalité permet à l'utilisateur connecté de consulter ses propres informations.
 
+Methode getCurrentUserProfile()=Retourner les informations de l'utilisateur actuellement connecté.
+getUser() =récupère l'utilisateur connecté.
+
 ### Endpoint
 
 ```
