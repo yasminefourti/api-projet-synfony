@@ -3,10 +3,14 @@
 namespace App\Controller;
 
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserController extends AbstractController
 {
@@ -59,6 +63,85 @@ class UserController extends AbstractController
         // Retourne les informations de l'utilisateur
         return $this->json([
             'user' => $userData
+        ]);
+    }
+
+    /**
+     * Met à jour les informations de l'utilisateur connecté
+     */
+    #[Route('/api/user/profile', name: 'api_user_update_profile', methods: ['PUT', 'PATCH'])]
+    public function updateUserProfile(
+        Request $request, 
+        EntityManagerInterface $entityManager,
+        ValidatorInterface $validator,
+        UserPasswordHasherInterface $passwordHasher = null
+    ): JsonResponse
+    {
+        // Récupère l'utilisateur connecté
+        $user = $this->getUser();
+        
+        // Vérifie si un utilisateur est connecté
+        if (!$user) {
+            return $this->json([
+                'message' => 'Utilisateur non connecté'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+        
+        // Récupère les données de la requête
+        $data = json_decode($request->getContent(), true);
+        
+        if (!$data) {
+            return $this->json([
+                'message' => 'Données invalides ou manquantes'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+        
+        // Met à jour les champs si présents
+        if (isset($data['firstname'])) {
+            $user->setFirstname($data['firstname']);
+        }
+        
+        if (isset($data['lastname'])) {
+            $user->setLastname($data['lastname']);
+        }
+        
+        if (isset($data['email'])) {
+            $user->setEmail($data['email']);
+        }
+        
+        // Mise à jour du mot de passe si présent et si le service de hachage est disponible
+        if (isset($data['password']) && !empty($data['password']) && $passwordHasher !== null) {
+            $hashedPassword = $passwordHasher->hashPassword($user, $data['password']);
+            $user->setPassword($hashedPassword);
+        }
+        
+        // Valide l'entité avant la sauvegarde
+        $errors = $validator->validate($user);
+        if (count($errors) > 0) {
+            $errorMessages = [];
+            foreach ($errors as $error) {
+                $errorMessages[$error->getPropertyPath()] = $error->getMessage();
+            }
+            
+            return $this->json([
+                'message' => 'Erreur de validation',
+                'errors' => $errorMessages
+            ], Response::HTTP_BAD_REQUEST);
+        }
+        
+        // Sauvegarde les modifications
+        $entityManager->flush();
+        
+        // Retourne les informations mises à jour
+        return $this->json([
+            'message' => 'Profil mis à jour avec succès',
+            'user' => [
+                'id' => $user->getId(),
+                'firstname' => $user->getFirstname(),
+                'lastname' => $user->getLastname(),
+                'email' => $user->getEmail(),
+                'role' => $user->getRoles(),
+            ]
         ]);
     }
 }

@@ -11,12 +11,13 @@ Ce document explique comment utiliser l'API d'authentification de notre applicat
 - En tant qu’admin j’ai la liste de tous les utilisateurs
 - Je peux me déconnecter
 
-## 📝 Inscription
+## 1.📝 Inscription
 
 ### Endpoint
 
 ```
-POST http://localhost:8000/api/register
+Méthode : POST
+http://127.0.0.1:8000/api/register
 ```
 
 ### En-têtes (Headers)
@@ -41,12 +42,13 @@ Content-Type: application/json
 
 En cas de succès, l'API renvoie un statut `201 Created` avec les informations de l'utilisateur créé (sans le mot de passe).
 
-## 🔑 Connexion
+## 2. 🔑 Connexion
 
 ### Endpoint
 
 ```
-POST http://localhost:8000/api/login
+Méthode : POST
+http://127.0.0.1:8000/api/login
 ```
 
 ### En-têtes (Headers)
@@ -75,7 +77,7 @@ Accept: application/json
 
 > ⚠️ **Important** : Conservez ce token, vous en aurez besoin pour toutes les requêtes authentifiées.
 
-## 👤 Consulter son profil
+## 👤 3.Consulter son profil à l'utilisateur connecté
 
 Cette fonctionnalité permet à l'utilisateur connecté de consulter ses propres informations.
 
@@ -85,6 +87,7 @@ getUser() =récupère l'utilisateur connecté.
 ### Endpoint
 
 ```
+Méthode : GET
 GET http://localhost:8000/api/user/profile
 ```
 
@@ -106,16 +109,23 @@ Authorization: Bearer [votre_token_jwt]
 }
 ```
 
-## ✏️ Modifier ses informations
+## 4. ✏️ Modifier ses informations
 
 Cette fonctionnalité permet à l'utilisateur connecté de modifier ses informations personnelles.
-modifier userController.php
-Test de l'API de profil avec Postman
+1. modifier userController.php
+ -J'ai ajouté une nouvelle méthode updateUserProfile qui :Utilise la même route /api/user/profile mais avec les méthodes HTTP PUT et PATCH
+ -Valide les données avant de les enregistrer
+-Retourne les informations mises à jour
+2. Test de l'API de profil avec Postman
+RQ:
+GET /api/user/profile    (pour afficher le profil)
+PUT /api/user/profile    (pour mettre à jour le profil)
 
 ### Endpoint
 
 ```
- http://127.0.0.1:8000/api/user/profile
+Méthode : PUT
+http://127.0.0.1:8000/api/user/profile
 ```
 
 ### En-têtes (Headers)
@@ -129,12 +139,21 @@ Authorization: Bearer [votre_token_jwt]
 
 ```json
 {
-    "lastname": "Dupont",
-    "firstname": "Pierre",
-    "email": "pierre.dupont@example.com"
+    "firstname": "Nouveau Prénom",
+    "lastname": "Nouveau Nom",
+    "email": "nouveau.email@exemple.com"
 }
 ```
 
 ### Réponse attendue
 
-L'API renvoie un statut `200 OK` avec les informations mises à jour de l'utilisateur.
+{
+    "message": "Profil mis à jour avec succès",
+    "user": {
+        "id": 1,
+        "firstname": "Nouveau Prénom",
+        "lastname": "Nouveau Nom",
+        "email": "nouveau.email@exemple.com",
+        "role": ["ROLE_USER"]
+    }
+}
