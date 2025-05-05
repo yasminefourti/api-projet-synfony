@@ -4,12 +4,12 @@ Ce document explique comment utiliser l'API d'authentification de notre applicat
 
 ## 📋 Table des matières
 
-- Je peux m'inscrire
-- Je peux me connecter
-- J'affiche mes infos (afficher les informations de l'utilisateur connecté))
-- Je peux modifier mes infos
-- En tant qu’admin j’ai la liste de tous les utilisateurs
-- Je peux me déconnecter
+1. [📝 Je peux m'inscrire](#1--inscription)  
+2. [🔑 Je peux me connecter](#2--connexion)  
+3. [👤 J'affiche mes informations](#3--consulter-son-profil)  
+4. [✏️ Je peux modifier mes informations](#4--modifier-son-profil)  
+5. [🔍 En tant qu’admin, j’ai la liste de tous les utilisateurs](#5--liste-des-utilisateurs-admin)  
+6. [🚪 Je peux me déconnecter](#6--déconnexion)
 
 ## 1.📝 Inscription
 
@@ -88,7 +88,7 @@ getUser() =récupère l'utilisateur connecté.
 
 ```
 Méthode : GET
-GET http://localhost:8000/api/user/profile
+ http://localhost:8000/api/user/profile
 ```
 
 ### En-têtes (Headers)
@@ -146,6 +146,7 @@ Authorization: Bearer [votre_token_jwt]
 ```
 
 ### Réponse attendue
+```json
 
 {
     "message": "Profil mis à jour avec succès",
@@ -157,7 +158,8 @@ Authorization: Bearer [votre_token_jwt]
         "role": ["ROLE_USER"]
     }
 }
-## 5. ✏️ En tant qu’admin j’ai la liste de tous les utilisateurs
+```
+## 5. 🔍 En tant qu’admin j’ai la liste de tous les utilisateurs
 Restriction d’accès :
 
 - L’attribut #[IsGranted('ROLE_ADMIN')] garantit que seuls les utilisateurs ayant le rôle ROLE_ADMIN peuvent appeler cette route.
@@ -169,16 +171,17 @@ Restriction d’accès :
 Le contrôleur utilise le UserRepository pour appeler la méthode findAll() qui retourne tous les utilisateurs enregistrés dans la base de données.
 
 
-Endpoint
+### 📬 Endpoint
     Méthode : GET
     http://localhost:8000/api/users
 
-Corps de la requête (Body) qui a le role admin
+### Corps de la requête (Body) qui a le role admin
   
     "email": "mm@example.com",
     "password": "1234"
 
-Réponse attendue
+### Réponse attendue
+```json
 {
     "users": [
         {
@@ -199,3 +202,4 @@ Réponse attendue
                 "ROLE_USER"
             ]
         },......
+ ```
