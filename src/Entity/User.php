@@ -28,7 +28,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column]
-    private array $role = [];
+    private array $roles = [];
 
     public function getId(): ?int
     {
@@ -92,12 +92,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
  # Fonction obligatoire du UserInterface
     public function getRoles(): array
     {
-        return $this->role;
+        return $this->roles ?? []; #modifier
     }
 
-    public function setRoles(array $role): static
+    public function setRoles(array $roles): static
     {
-        $this->role = $role;
+        $this->roles = $roles ?? [];
 
         return $this;
     }

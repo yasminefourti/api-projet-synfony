@@ -44,7 +44,7 @@ security:
         - { path: ^/api/login, roles: PUBLIC_ACCESS}
 
         # Exemple : seules les admins peuvent accéder à /api/users
-        - { path: ^/api/users$, roles: ROLE_ADMIN }
+        - { path: ^/api/users, roles: ROLE_ADMIN }
 
         # Toutes les autres routes /api nécessitent un token JWT
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }

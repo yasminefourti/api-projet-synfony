@@ -11,14 +11,18 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class UserController extends AbstractController
 {
+    /**
+     * Liste tous les utilisateurs (réservé aux administrateurs)
+     */
     #[Route('/api/users', name: 'user_index', methods: ['GET'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function index(UserRepository $userRepository): JsonResponse
     {
-        // Vous pourriez vouloir restreindre cette route aux administrateurs
-        // $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         
         $users = $userRepository->findAll();
         $data = [];
@@ -28,10 +32,13 @@ class UserController extends AbstractController
                 'firstname' => $user->getFirstname(),
                 'lastname' => $user->getLastname(),
                 'email' => $user->getEmail(),
-                'role' => $user->getRoles(),
+                'roles' => $user->getRoles() ?? [],
             ];
         }
-        return $this->json($data);
+        return $this->json([
+            'users' => $data,
+            'total' => count($data)
+        ]);
     }
     
     /**
@@ -56,7 +63,7 @@ class UserController extends AbstractController
             'firstname' => $user->getFirstname(),
             'lastname' => $user->getLastname(),
             'email' => $user->getEmail(),
-            'role' => $user->getRoles(),
+            'roles' => $user->getRoles(),
             // Vous pouvez ajouter d'autres champs selon votre entité User
         ];
         
@@ -140,8 +147,36 @@ class UserController extends AbstractController
                 'firstname' => $user->getFirstname(),
                 'lastname' => $user->getLastname(),
                 'email' => $user->getEmail(),
-                'role' => $user->getRoles(),
+                'roles' => $user->getRoles(),
             ]
+        ]);
+    }
+     /**
+     * Affiche les détails d'un utilisateur spécifique (réservé aux administrateurs)
+     */
+    #[Route('/api/users/{id}', name: 'user_show', methods: ['GET'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function show(int $id, UserRepository $userRepository): JsonResponse
+    {
+        $user = $userRepository->find($id);
+        
+        if (!$user) {
+            return $this->json([
+                'message' => 'Utilisateur non trouvé'
+            ], Response::HTTP_NOT_FOUND);
+        }
+        
+        $userData = [
+            'id' => $user->getId(),
+            'firstname' => $user->getFirstname(),
+            'lastname' => $user->getLastname(),
+            'email' => $user->getEmail(),
+            'roles' => $user->getRoles(),
+            // Ajoutez d'autres champs selon besoin
+        ];
+        
+        return $this->json([
+            'user' => $userData
         ]);
     }
 }

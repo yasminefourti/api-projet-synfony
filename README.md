@@ -157,3 +157,45 @@ Authorization: Bearer [votre_token_jwt]
         "role": ["ROLE_USER"]
     }
 }
+## 5. ✏️ En tant qu’admin j’ai la liste de tous les utilisateurs
+Restriction d’accès :
+
+- L’attribut #[IsGranted('ROLE_ADMIN')] garantit que seuls les utilisateurs ayant le rôle ROLE_ADMIN peuvent appeler cette route.
+
+- Si un utilisateur non administrateur tente d'y accéder, une erreur 403 Access Denied sera renvoyée automatiquement.
+
+- Récupération des utilisateurs :
+
+Le contrôleur utilise le UserRepository pour appeler la méthode findAll() qui retourne tous les utilisateurs enregistrés dans la base de données.
+
+
+Endpoint
+    Méthode : GET
+    http://localhost:8000/api/users
+
+Corps de la requête (Body) qui a le role admin
+  
+    "email": "mm@example.com",
+    "password": "1234"
+
+Réponse attendue
+{
+    "users": [
+        {
+            "id": 1,
+            "firstname": "Yasmine",
+            "lastname": "Fourti",
+            "email": "yasmine@example.com",
+            "roles": [
+                "ROLE_USER"
+            ]
+        },
+        {
+            "id": 2,
+            "firstname": "John",
+            "lastname": "Doe",
+            "email": "john.doe@example.com",
+            "roles": [
+                "ROLE_USER"
+            ]
+        },......
