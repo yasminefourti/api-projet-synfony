@@ -203,3 +203,15 @@ Le contrôleur utilise le UserRepository pour appeler la méthode findAll() qui 
             ]
         },......
  ```
+## 6.🚪 Je peux me déconnecter 
+### 📬 Endpoint
+    Méthode : POST
+    http://localhost:8000/api/logout
+
+
+### Réponse attendue
+```json
+    {
+        "message": "Déconnexion réussie"
+    }
+```

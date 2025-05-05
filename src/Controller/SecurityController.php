@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 class SecurityController extends AbstractController
@@ -17,6 +18,16 @@ class SecurityController extends AbstractController
         // En cas d'erreur dans la configuration, on retourne une erreur explicite
         return $this->json([
             'message' => 'Cette méthode ne devrait jamais être appelée directement.'
-        ], Response::HTTP_UNAUTHORIZED);
+        ], Response::HTTP_UNAUTHORIZED); //code 401
+    }
+
+// Route pour la déconnexion côté frontend (par exemple suppression du token JWT côté client)
+    #[Route('/api/logout', name: 'api_logout', methods: ['POST'])]
+    public function logout(): JsonResponse
+    {
+        // Le frontend supprimera le token JWT à la réception de cette réponse
+        return new JsonResponse([
+            'message' => 'Déconnexion réussie'
+        ], JsonResponse::HTTP_OK); // Code 200 OK
     }
 }

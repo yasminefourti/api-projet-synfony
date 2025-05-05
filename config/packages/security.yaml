@@ -31,9 +31,9 @@ security:
             jwt: ~                               # Utilisation de JWT pour sécuriser les requêtes
 
         # Firewall pour la déconnexion
-        logout:
-            pattern: ^/api/logout
-            stateless: true
+        #logout:
+           # pattern: ^/api/logout
+            #stateless: true
 
     # Définition des règles d'accès (access_control)
     access_control:
@@ -48,3 +48,5 @@ security:
 
         # Toutes les autres routes /api nécessitent un token JWT
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+        # La page /logout est publique (tout le monde peut y accéder)
+        - { path: ^/api/logout, roles: PUBLIC_ACCESS }  
