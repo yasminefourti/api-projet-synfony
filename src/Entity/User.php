@@ -4,6 +4,8 @@ namespace App\Entity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -29,6 +31,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private array $roles = [];
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Objectif::class, orphanRemoval: true)]
+    private Collection $objectifs;
+
+    public function __construct()
+    {
+        $this->objectifs = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -89,7 +99,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
- # Fonction obligatoire du UserInterface
+ 
+    # Fonction obligatoire du UserInterface
     public function getRoles(): array
     {
         return $this->roles ?? []; #modifier
@@ -110,5 +121,40 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUserIdentifier(): string
     {
         return $this->email;
+    }
+
+    /**
+     * @return Collection<int, Objectif>
+     */
+    public function getObjectifs(): Collection
+    {
+        return $this->objectifs;
+    }
+
+    public function addObjectif(Objectif $objectif): static
+    {
+        if (!$this->objectifs->contains($objectif)) {
+            $this->objectifs->add($objectif);
+            $objectif->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeObjectif(Objectif $objectif): static
+    {
+        if ($this->objectifs->removeElement($objectif)) {
+            // set the owning side to null (unless already changed)
+            if ($objectif->getUser() === $this) {
+                $objectif->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+    
+    public function hasObjectif(): bool
+    {
+        return !$this->objectifs->isEmpty();
     }
 }
