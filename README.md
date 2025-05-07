@@ -215,7 +215,8 @@ Le contrôleur utilise le UserRepository pour appeler la méthode findAll() qui 
         "message": "Déconnexion réussie"
     }
 ```
-## 7.🚪 créer un objectif
+## 7.🚪 entité  objectif
+### creer un objectif
 Méthode : POST
 URL : http://localhost:8000/api/budget/goals
 Body (JSON) :
@@ -223,6 +224,34 @@ Body (JSON) :
 json{
   "title": "Épargne pour vacances",
   "targetAmount": 2000,
+  "startDate": "2025-05-15T00:00:00+00:00",
+  "endDate": "2025-12-31T00:00:00+00:00"
+}
+```
+ ### Listez vos objectifs
+
+Méthode : GET
+URL : http://localhost:8000/api/budget/goals
+Headers :
+
+Authorization: Bearer votre_token_jwt
+ ### Supprimez votre objectif
+
+Méthode : DELETE
+URL : http://localhost:8000/api/budget/goals/{id} (remplacez {id} par l'ID de votre objectif)
+Headers :
+
+Authorization: Bearer votre_token_jwt
+
+ ### Met à jour un objectif existant
+methode:PUT
+http://localhost:8000/api/budget/goals/2
+
+```json
+{
+  "title": "Nouvel objectif mis à jour",
+  "targetAmount": 200000,
+  "currentAmount": 1000,
   "startDate": "2025-05-15T00:00:00+00:00",
   "endDate": "2025-12-31T00:00:00+00:00"
 }
