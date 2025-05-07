@@ -215,3 +215,15 @@ Le contrôleur utilise le UserRepository pour appeler la méthode findAll() qui 
         "message": "Déconnexion réussie"
     }
 ```
+## 7.🚪 créer un objectif
+Méthode : POST
+URL : http://localhost:8000/api/budget/goals
+Body (JSON) :
+```json
+json{
+  "title": "Épargne pour vacances",
+  "targetAmount": 2000,
+  "startDate": "2025-05-15T00:00:00+00:00",
+  "endDate": "2025-12-31T00:00:00+00:00"
+}
+```

@@ -1,0 +1,59 @@
+ // src/Entity/Objectif.php
+namespace App\Entity;
+
+use App\Repository\ObjectifRepository;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+
+#[ORM\Entity(repositoryClass: ObjectifRepository::class)]
+class Objectif
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    #[Groups(['goal:list', 'goal:detail'])]
+    private ?int $id = null;
+    
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le titre est obligatoire")]
+    #[Assert\Length(min: 3, max: 255)]
+    #[Groups(['goal:list', 'goal:detail'])]
+    private ?string $titre = null;
+    
+    #[ORM\Column]
+    #[Assert\NotBlank(message: "Le montant cible est obligatoire")]
+    #[Assert\Positive(message: "Le montant cible doit être positif")]
+    #[Groups(['goal:list', 'goal:detail'])]
+    private ?float $montantCible = null;
+    
+   
+    
+    #[ORM\Column(type: 'datetime')]
+    #[Assert\NotBlank(message: "La date de début est obligatoire")]
+    #[Groups(['goal:list', 'goal:detail'])]
+    private ?\DateTimeInterface $dateDebut = null;
+    
+    #[ORM\Column(type: 'datetime')]
+    #[Assert\NotBlank(message: "La date de fin est obligatoire")]
+    #[Assert\GreaterThan(propertyPath: "dateDebut", message: "La date de fin doit être postérieure à la date de début")]
+    #[Groups(['goal:list', 'goal:detail'])]
+    private ?\DateTimeInterface $dateFin = null;
+    
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+    
+    // Gardez les getters et setters générés automatiquement
+    
+    // Ajoutez cette méthode pour calculer le pourcentage d'atteinte
+    #[Groups(['goal:list', 'goal:detail'])]
+    public function getPourcentageAtteint(): float
+    {
+        if ($this->montantCible <= 0) {
+            return 0;
+        }
+        
+        return min(100, ($this->montantCumule / $this->montantCible) * 100);
+    }
+}
