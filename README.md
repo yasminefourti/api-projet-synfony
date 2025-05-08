@@ -203,7 +203,65 @@ Le contrôleur utilise le UserRepository pour appeler la méthode findAll() qui 
             ]
         },......
  ```
-## 6.🚪 Je peux me déconnecter 
+- La liste des utilisateurs (/api/users - GET)
+- L'affichage du profil utilisateur connecté (/api/user/profile - GET)
+- La mise à jour du profil utilisateur (/api/user/profile - PUT/PATCH)
+- L'affichage d'un utilisateur spécifique (/api/users/{id} - GET)
+ ## 6. La modification des rôles/statut d'un utilisateur par un admin (admin seulement)
+### 📬 Endpoint
+Méthode: PUT
+URL: http://localhost:8000/api/admin/users/2 (où 2 est l'ID de l'utilisateur)
+Headers:
+Content-Type: application/json
+Authorization: Bearer [votre_token_jwt]
+### Body (raw JSON):
+```json
+json{
+  "roles": ["ROLE_USER", "ROLE_ADMIN"],
+  "isActive": true
+}
+```
+### Résultat attendu:
+```json
+json{
+  "message": "Utilisateur mis à jour avec succès",
+  "user": {
+    "id": 2,
+    "firstname": "Jane",
+    "lastname": "Smith",
+    "email": "jane@example.com",
+    "roles": ["ROLE_USER", "ROLE_ADMIN"]
+  }
+}
+```
+ 
+## 7. supprimer un utilisateur (admin seulement)
+### 7.1 Suppression logique (soft delete)
+### 📬 Endpoint
+Méthode: DELETE
+URL: http://localhost:8000/api/admin/users/2 (où 2 est l'ID de l'utilisateur)
+Headers:
+Authorization: Bearer [votre_token_jwt]
+### Résultat attendu:
+```json
+json{
+  "message": "Utilisateur supprimé avec succès"
+}
+```
+### 7.2 Suppression définitive (hard delete)
+### 📬 Endpoint
+Méthode: DELETE
+URL: http://localhost:8000/api/admin/users/2?type=hard (où 2 est l'ID de l'utilisateur)
+Headers:
+Authorization: Bearer [votre_token_jwt]
+### Résultat attendu:
+```json
+json{
+  "message": "Utilisateur supprimé avec succès"
+}
+```
+
+## 8.🚪 Je peux me déconnecter 
 ### 📬 Endpoint
     Méthode : POST
     http://localhost:8000/api/logout
