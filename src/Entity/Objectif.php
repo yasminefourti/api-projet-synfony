@@ -6,6 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: ObjectifRepository::class)]
 #[UniqueEntity(
@@ -53,6 +55,16 @@ class Objectif
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['goal:detail'])]
     private ?User $user = null;
+
+    #[ORM\OneToMany(mappedBy: 'objectif', targetEntity: Transaction::class, orphanRemoval: true)]
+    #[Groups(['goal:detail'])]
+    private Collection $transactions;
+
+    public function __construct()
+    {
+        $this->transactions = new ArrayCollection();
+        $this->currentAmount = 0.0;
+    }
 
     public function getId(): ?int
     {
@@ -127,6 +139,36 @@ class Objectif
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Transaction>
+     */
+    public function getTransactions(): Collection
+    {
+        return $this->transactions;
+    }
+
+    public function addTransaction(Transaction $transaction): static
+    {
+        if (!$this->transactions->contains($transaction)) {
+            $this->transactions->add($transaction);
+            $transaction->setObjectif($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransaction(Transaction $transaction): static
+    {
+        if ($this->transactions->removeElement($transaction)) {
+            // set the owning side to null (unless already changed)
+            if ($transaction->getObjectif() === $this) {
+                $transaction->setObjectif(null);
+            }
+        }
 
         return $this;
     }
