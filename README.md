@@ -314,3 +314,84 @@ http://localhost:8000/api/budget/goals/2
   "endDate": "2025-12-31T00:00:00+00:00"
 }
 ```
+## 8.  entité  Transaction
+### Lister les transactions d’un objectif
+Méthode : GET
+URL : http://localhost:8000/api/budget/goals/{goalId}/transactions
+(remplace {goalId} par l’ID d’un objectif existant)
+
+Headers :
+
+Authorization : Bearer <token>
+### Créer une transaction pour un objectif
+Méthode : POST
+URL : http://localhost:8000/api/budget/goals/{goalId}/transactions
+
+Headers :
+Content-Type : application/json
+Authorization : Bearer <token>
+Body JSON
+```json 
+{
+  "type": "recette",
+  "amount": 150.00,
+  "date": "2025-05-22",
+  "description": "Salaire"
+}
+```
+### Voir le détail d’une transaction
+Méthode : GET
+URL : http://localhost:8000/api/budget/transactions/{Id}
+ID d’une transaction existante
+### Modifier une transaction
+Méthode : PUT
+
+URL : http://localhost:8000/api/budget/transactions/{Id}
+
+Body JSON
+```json 
+{
+  "type": "dépense",
+  "amount": 50.00,
+  "date": "2025-05-23",
+  "description": "Courses"
+}
+```
+### Supprimer une transaction
+Méthode : DELETE
+
+URL : http://localhost:8000/api/budget/transactions/{Id}
+
+
+## 9. entité  Categorie
+### Création d’une catégorie
+Méthode : POST
+URL : http://localhost:8000/api/budget/categories
+Headers :
+Content-Type: application/json
+Authorization: (token Bearer ou autre)
+Body : raw JSON, exemple :
+```json
+{
+  "nom": "Loisirs",
+  "description": "Catégorie pour les dépenses loisirs"
+}
+```
+### Récupèrer la liste des catégories disponibles
+Méthode : GET
+URL : http://localhost:8000/api/budget/categories
+Headers :
+Authorization: ajoute un token Bearer 
+### Mettre à jour une catégorie
+Méthode : PUT
+URL : http://localhost:8000/api/budget/categories/1 
+
+Headers :
+
+Content-Type: application/json
+Authorization
+### Supprime une catégorie
+Méthode : DELETE
+URL : http://localhost:8000/api/budget/categories/1
+Headers :
+Authorization

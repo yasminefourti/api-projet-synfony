@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\SecurityBundle\Security;
 use App\Entity\Objectif;
 use App\Entity\Transaction;
+use App\Entity\Categorie;
 use App\Repository\ObjectifRepository;
 use App\Repository\TransactionRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -151,6 +152,21 @@ class TransactionController extends AbstractController
             $transaction->setDescription($data['description']);
         }
 
+        // Gérer la catégorie
+        if (isset($data['categorie_id'])) {
+            $categorie = $this->entityManager->getRepository(Categorie::class)->find($data['categorie_id']);
+            if ($categorie) {
+                // Vérifier que la catégorie appartient bien à l'utilisateur
+                if ($categorie->getUser()->getId() === $user->getId()) {
+                    $transaction->setCategorie($categorie);
+                } else {
+                    return $this->json(['message' => 'Vous n\'êtes pas autorisé à utiliser cette catégorie'], Response::HTTP_FORBIDDEN);
+                }
+            } else {
+                return $this->json(['message' => 'Catégorie non trouvée'], Response::HTTP_NOT_FOUND);
+            }
+        }
+
         // Valider la transaction
         $errors = $this->validator->validate($transaction);
         if (count($errors) > 0) {
@@ -268,6 +284,26 @@ class TransactionController extends AbstractController
         
         if (isset($data['description'])) {
             $transaction->setDescription($data['description']);
+        }
+
+        // Gérer la catégorie dans la mise à jour
+        if (isset($data['categorie_id'])) {
+            if ($data['categorie_id'] === null) {
+                // Supprimer la catégorie
+                $transaction->setCategorie(null);
+            } else {
+                $categorie = $this->entityManager->getRepository(Categorie::class)->find($data['categorie_id']);
+                if ($categorie) {
+                    // Vérifier que la catégorie appartient bien à l'utilisateur
+                    if ($categorie->getUser()->getId() === $user->getId()) {
+                        $transaction->setCategorie($categorie);
+                    } else {
+                        return $this->json(['message' => 'Vous n\'êtes pas autorisé à utiliser cette catégorie'], Response::HTTP_FORBIDDEN);
+                    }
+                } else {
+                    return $this->json(['message' => 'Catégorie non trouvée'], Response::HTTP_NOT_FOUND);
+                }
+            }
         }
 
         // Valider la transaction
