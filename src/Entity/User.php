@@ -35,9 +35,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Objectif::class, orphanRemoval: true)]
     private Collection $objectifs;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Categorie::class, orphanRemoval: true)]
+    private Collection $categories;
+
     public function __construct()
     {
         $this->objectifs = new ArrayCollection();
+        $this->categories = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -156,5 +160,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function hasObjectif(): bool
     {
         return !$this->objectifs->isEmpty();
+    }
+    /**
+     * @return Collection<int, Categorie>
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(Categorie $category): static
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories->add($category);
+            $category->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Categorie $category): static
+    {
+        if ($this->categories->removeElement($category)) {
+            // set the owning side to null (unless already changed)
+            if ($category->getUser() === $this) {
+                $category->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

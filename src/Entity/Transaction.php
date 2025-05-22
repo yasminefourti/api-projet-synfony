@@ -40,6 +40,11 @@ class Transaction
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['transaction:read', 'transaction:write', 'goal:detail'])]
     private ?string $description = null;
+    
+
+    #[ORM\ManyToOne(inversedBy: 'transactions')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Categorie $categorie = null;
 
     public function getId(): ?int
     {
@@ -102,6 +107,18 @@ class Transaction
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getCategorie(): ?Categorie
+    {
+        return $this->categorie;
+    }
+
+    public function setCategorie(?Categorie $categorie): static
+    {
+        $this->categorie = $categorie;
 
         return $this;
     }
