@@ -53,4 +53,20 @@ class ObjectifRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['user' => $user]);
     }
+
+    /**
+     * Récupérer l'objectif unique d'un utilisateur
+     */
+    public function findUserObjectif(User $user): ?Objectif
+    {
+        return $this->findOneBy(['user' => $user]);
+    }
+
+    /**
+     * Vérifier si un utilisateur a déjà un objectif
+     */
+    public function userHasObjectif(User $user): bool
+    {
+        return $this->count(['user' => $user]) > 0;
+    }
 }

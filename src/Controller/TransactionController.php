@@ -124,6 +124,7 @@ class TransactionController extends AbstractController
         // Créer une nouvelle transaction
         $transaction = new Transaction();
         $transaction->setObjectif($objectif);
+        $transaction->setUser($user); // ← CORRECTION AJOUTÉE
         
         // Définir les propriétés de la transaction
         if (isset($data['type'])) {

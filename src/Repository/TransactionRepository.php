@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Repository;
+use App\Entity\User;
+use App\Entity\Objectif;
 
 use App\Entity\Transaction;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -108,5 +110,99 @@ class TransactionRepository extends ServiceEntityRepository
             ->orderBy('t.date', 'DESC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Trouver les transactions d'un utilisateur pour un objectif spécifique
+     */
+    public function findByUserAndObjectif(User $user, Objectif $objectif): array
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.user = :user')
+            ->andWhere('t.objectif = :objectif')
+            ->setParameter('user', $user)
+            ->setParameter('objectif', $objectif)
+            ->orderBy('t.date', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Calculer le total des transactions pour un objectif
+     */
+    public function getTotalAmountByObjectif(User $user, Objectif $objectif): float
+    {
+        $result = $this->createQueryBuilder('t')
+            ->select('SUM(t.amount) as total')
+            ->andWhere('t.user = :user')
+            ->andWhere('t.objectif = :objectif')
+            ->setParameter('user', $user)
+            ->setParameter('objectif', $objectif)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return (float) ($result ?? 0);
+    }
+
+    /**
+     * Trouve les transactions par catégorie pour un objectif
+     */
+    public function findByObjectifAndCategorie(int $objectifId, int $categorieId): array
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.objectif = :objectifId')
+            ->andWhere('t.categorie = :categorieId')
+            ->setParameter('objectifId', $objectifId)
+            ->setParameter('categorieId', $categorieId)
+            ->orderBy('t.date', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Trouve les transactions par description (recherche partielle)
+     */
+    public function findByDescriptionLike(string $description): array
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.description LIKE :description')
+            ->setParameter('description', '%' . $description . '%')
+            ->orderBy('t.date', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Calcule le total des recettes pour un objectif
+     */
+    public function getTotalRecettesByObjectif(int $objectifId): float
+    {
+        $result = $this->createQueryBuilder('t')
+            ->select('SUM(t.amount) as total')
+            ->andWhere('t.objectif = :objectifId')
+            ->andWhere('t.type = :type')
+            ->setParameter('objectifId', $objectifId)
+            ->setParameter('type', 'recette')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return (float) ($result ?? 0);
+    }
+
+    /**
+     * Calcule le total des dépenses pour un objectif
+     */
+    public function getTotalDepensesByObjectif(int $objectifId): float
+    {
+        $result = $this->createQueryBuilder('t')
+            ->select('SUM(t.amount) as total')
+            ->andWhere('t.objectif = :objectifId')
+            ->andWhere('t.type = :type')
+            ->setParameter('objectifId', $objectifId)
+            ->setParameter('type', 'dépense')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return (float) ($result ?? 0);
     }
 }

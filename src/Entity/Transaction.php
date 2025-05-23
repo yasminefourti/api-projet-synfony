@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+use App\Entity\User;
 
 use App\Repository\TransactionRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -45,6 +46,26 @@ class Transaction
     #[ORM\ManyToOne(inversedBy: 'transactions')]
     #[ORM\JoinColumn(nullable: true)]
     private ?Categorie $categorie = null;
+    
+    #[ORM\ManyToOne(inversedBy: 'transactions')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    
+
 
     public function getId(): ?int
     {
